@@ -32,5 +32,6 @@ package main
 import "github.com/haron1996/fb/funcs"
 
 func main() {
-	funcs.PostToMarketplace()
+	funcs.PostToGroups()
+	//funcs.PostToMarketplace()
 }

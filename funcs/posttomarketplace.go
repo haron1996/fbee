@@ -53,7 +53,7 @@ func PostToMarketplace() {
 
 		// Path to the current subdirectory
 		subDir := filepath.Join(root, entry.Name())
-		fmt.Println("Directory:", subDir)
+		fmt.Println("DIRECTORY:", subDir)
 
 		// Read files from the subdirectory
 		subEntries, err := os.ReadDir(subDir)
@@ -68,7 +68,7 @@ func PostToMarketplace() {
 			if !subEntry.IsDir() {
 				filePath := filepath.Join(subDir, subEntry.Name())
 				if filepath.Ext(filePath) != ".txt" { // Check if the file is not a .txt file
-					fmt.Println("File:", filePath)
+					fmt.Println("IMAGE:", filePath)
 
 					// Collect file paths to attach
 					imageFiles = append(imageFiles, filePath)
@@ -78,7 +78,6 @@ func PostToMarketplace() {
 
 		// Attach collected files to the file input element
 		if len(imageFiles) > 0 {
-			fmt.Println(imageFiles)
 			fileInput.MustSetFiles(imageFiles...)
 		}
 
@@ -128,7 +127,7 @@ func PostToMarketplace() {
 		}
 
 		// Join the parts with "...\n"
-		formattedDescription := strings.Join(parts, ".\n\n")
+		formattedDescription := strings.Join(parts, "\n\n")
 
 		fmt.Println("Description: " + formattedDescription)
 
