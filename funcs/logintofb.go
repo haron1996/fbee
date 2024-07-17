@@ -23,12 +23,13 @@ func LoginToFacebook() {
 		return
 	}
 	if pageHasLoginForm {
-		page.MustElement("#email").MustInput("hkibetr@gmail.com")
-		page.MustElement("#pass").MustInput("33608080")
+		page.MustElement("#email").MustInput("0702748531")
+		page.MustElement("#pass").MustInput("12981791")
 		page.MustElement("button").MustClick()
 
 		time.Sleep(10 * time.Second)
 	}
-
+	time.Sleep(10 * time.Second)
+	page.MustScreenshot("home.png")
 	log.Println("Login complete")
 }
