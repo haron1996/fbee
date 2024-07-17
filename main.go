@@ -37,8 +37,9 @@ import (
 
 func main() {
 	funcs.LoginToFacebook()
-	time.Sleep(1 * time.Minute)
-	// funcs.PostToMarketplace()
+	time.Sleep(10 * time.Second)
+	//funcs.PostToMarketplace()
 	funcs.ListInMorePlaces()
 	//funcs.PostToGroups()
+	//funcs.Test()
 }
