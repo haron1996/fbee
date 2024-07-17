@@ -40,6 +40,4 @@ func main() {
 	time.Sleep(10 * time.Second)
 	funcs.PostToMarketplace()
 	funcs.ListInMorePlaces()
-	//funcs.PostToGroups()
-	//funcs.Test()
 }
