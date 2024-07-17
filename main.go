@@ -20,7 +20,7 @@
 // 	page.MustElement("#pass").MustInput("33608080")
 // 	page.MustElement("button").MustClick()
 
-// 	time.Sleep(1 * time.Minute)
+// 	time.Sleep(10 * time.Second)
 
 // 	page = browser.MustPage("https://web.facebook.com/").MustWaitLoad()
 
@@ -29,9 +29,16 @@
 
 package main
 
-import "github.com/haron1996/fb/funcs"
+import (
+	"time"
+
+	"github.com/haron1996/fb/funcs"
+)
 
 func main() {
-	funcs.PostToGroups()
-	//funcs.PostToMarketplace()
+	funcs.LoginToFacebook()
+	time.Sleep(1 * time.Minute)
+	// funcs.PostToMarketplace()
+	funcs.ListInMorePlaces()
+	//funcs.PostToGroups()
 }

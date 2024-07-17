@@ -43,10 +43,15 @@ func PostToGroups() {
 
 	parentsLength := len(parents)
 
-	if parentsLength == 0 {
+	log.Println(parentsLength)
+
+	if parentsLength == 1 {
 		parent = parents[0]
 	} else if parentsLength == 2 {
 		parent = parents[1]
+	} else {
+		log.Println("no parents found")
+		return
 	}
 
 	selector := ".x1i10hfl.x1qjc9v5.xjbqb8w.xjqpnuy.xa49m3k.xqeqjp1.x2hbi6w.x13fuv20.xu3j5b3.x1q0q8m5.x26u7qi.x972fbf.xcfux6l.x1qhh985.xm0m39n.x9f619.x1ypdohk.xdl72j9.x2lah0s.xe8uvvx.xdj266r.x11i5rnm.xat24cr.x1mh8g0r.x2lwn1j.xeuugli.xexx8yu.x4uap5.x18d9i69.xkhd6sd.x1n2onr6.x16tdsg8.x1hl2dhg.xggy1nq.x1ja2u2z.x1t137rt.x1o1ewxj.x3x9cwd.x1e5q0jg.x13rtm0m.x1q0g3np.x87ps6o.x1lku1pv.x1rg5ohu.x1a2a7pz.xh8yej3"
@@ -55,11 +60,12 @@ func PostToGroups() {
 
 	for _, a := range anchors {
 		href := *a.MustAttribute("href")
+		fmt.Println(href)
 		page = browser.MustPage(href).MustWaitLoad()
-		time.Sleep(10 * time.Second)
-		page.MustElement(`div[aria-label="Sell Something"]`).MustClick()
-		time.Sleep(10 * time.Second)
-		page.MustElements("span.x1lliihq.x1iyjqo2")[0].MustClick()
+		// time.Sleep(10 * time.Second)
+		// page.MustElement(`div[aria-label="Sell Something"]`).MustClick()
+		// time.Sleep(10 * time.Second)
+		// page.MustElements("span.x1lliihq.x1iyjqo2")[0].MustClick()
 		// load config files
 		config, err := config.LoadConfig(".")
 		if err != nil {
@@ -80,13 +86,47 @@ func PostToGroups() {
 		})
 
 		// get images selector
-		imagesSelector := page.MustElement("div.x1gslohp.x1swvt13.x1pi30zi")
+		// imagesSelector := page.MustElement("div.x1gslohp.x1swvt13.x1pi30zi")
 
-		card := page.MustElement("div.x9f619.x1ja2u2z.x1k90msu.x6o7n8i.x1qfuztq.x10l6tqk.x17qophe.x13vifvy.x1hc1fzr.x71s49j.xh8yej3")
+		// card := page.MustElement("div.x9f619.x1ja2u2z.x1k90msu.x6o7n8i.x1qfuztq.x10l6tqk.x17qophe.x13vifvy.x1hc1fzr.x71s49j.xh8yej3")
+
+		fmt.Println("reached here...")
 
 		for _, entry := range entries {
+			log.Println("started looping entries...")
+			time.Sleep(10 * time.Second)
+			pageHasSellBtn, sellBtn, err := page.Has(`div[aria-label="Sell Something"]`)
+			if err != nil {
+				log.Println("Error checking if page/group has sell button:", err)
+				return
+			}
+
+			if !pageHasSellBtn {
+				continue
+			}
+			// sellBtn, err := page.Element(`div[aria-label="Sell Something"]`)
+			// if err != nil {
+			// 	log.Println("Error getting sell button element:", err)
+			// 	return
+			// }
+			err = sellBtn.Click("left", 1)
+			if err != nil {
+				log.Println("Error clicking sale button element:", err)
+				return
+			}
+			fmt.Println("reached here...")
+			time.Sleep(10 * time.Second)
+			page.MustElements("span.x1lliihq.x1iyjqo2")[0].MustWaitLoad().MustClick()
+			fmt.Println("reached here...")
+			time.Sleep(10 * time.Second)
+			page.MustScreenshot("start.png")
+			imagesSelector := page.MustElement("div.x1gslohp.x1swvt13.x1pi30zi")
+			fmt.Println("reached here...")
+			card := page.MustElement("div.x9f619.x1ja2u2z.x1k90msu.x6o7n8i.x1qfuztq.x10l6tqk.x17qophe.x13vifvy.x1hc1fzr.x71s49j.xh8yej3")
+			fmt.Println("reached here...?")
 			// Locate the file input element on the page
 			fileInput := imagesSelector.MustElement(`input[type="file"]`)
+			fmt.Println("file input located....")
 
 			//log.Println(fileInput.HTML())
 
@@ -170,11 +210,29 @@ func PostToGroups() {
 
 			fmt.Println("Description: " + formattedDescription)
 
+			fmt.Println("past description...")
+
+			page.MustScreenshot("process.png")
+
 			// set title
-			card.MustElement(`label[aria-label="Title"]`).MustInput(title)
+			titleInput, err := page.Element(`label[aria-label="Title"]`)
+			if err != nil {
+				log.Println("Error getting title input:", err)
+				return
+			}
+
+			err = titleInput.Input(title)
+			if err != nil {
+				log.Println("Error inputing title:", err)
+				return
+			}
+
+			fmt.Println("past card...")
 
 			// set price
 			card.MustElement(`label[aria-label="Price"]`).MustInput(price)
+
+			fmt.Println("past here...")
 
 			// set condition
 			condsInput, err := card.Element(`label[aria-label="Condition"]`)
@@ -203,21 +261,35 @@ func PostToGroups() {
 				}
 			}
 
-			// show more details
-			moreDetails := card.MustElement("div.x6s0dn4.xkh2ocl.x1q0q8m5.x1qhh985.xu3j5b3.xcfux6l.x26u7qi.xm0m39n.x13fuv20.x972fbf.x9f619.x78zum5.x1q0g3np.x1iyjqo2.xs83m0k.x1qughib.xat24cr.x11i5rnm.x1mh8g0r.xdj266r.x2lwn1j.xeuugli.x18d9i69.x4uap5.xkhd6sd.xexx8yu.x1n2onr6.x1ja2u2z")
+			fmt.Println("past here...")
 
-			moreDetails.MustClick()
+			// show more details
+			moreDetails, err := card.Element("div.x6s0dn4.xkh2ocl.x1q0q8m5.x1qhh985.xu3j5b3.xcfux6l.x26u7qi.xm0m39n.x13fuv20.x972fbf.x9f619.x78zum5.x1q0g3np.x1iyjqo2.xs83m0k.x1qughib.xat24cr.x11i5rnm.x1mh8g0r.xdj266r.x2lwn1j.xeuugli.x18d9i69.x4uap5.xkhd6sd.xexx8yu.x1n2onr6.x1ja2u2z")
+			if err != nil {
+				log.Println("Error getting more details:", err)
+				return
+			}
+
+			err = moreDetails.Click("left", 1)
+			if err != nil {
+				log.Println("Error clicking on more details:", err)
+				return
+			}
+
+			fmt.Println("past here...")
 
 			//set description
-			card.MustElementR("label", "Description").MustWaitVisible()
+			page.MustElementR("label", "Description").MustWaitVisible()
 
-			textarea := card.MustElementR("label", "Description").MustElement("textarea")
+			textarea := page.MustElementR("label", "Description").MustElement("textarea")
 
 			err = textarea.Input(formattedDescription)
 			if err != nil {
 				log.Println("Error inputing description text:", err)
 				return
 			}
+
+			fmt.Println("past here...")
 
 			// set product tags
 			productTagsTextareas, err := card.Elements(`label[aria-label="Product tags"]`)
@@ -267,6 +339,7 @@ func PostToGroups() {
 
 			// list in marketplace
 			page.MustElements("div.x9f619.x1n2onr6.x1ja2u2z.x78zum5.xdt5ytf.x2lah0s.x193iq5w.xr9ek0c.xjpr12u.xzboxd6.x14l7nz5")[2].MustClick()
+			fmt.Println("listed in marketplace...")
 
 			// list in groups
 			suggestedGroups, err := page.Elements(".x9f619.x1n2onr6.x1ja2u2z.x78zum5.xdt5ytf.x2lah0s.x193iq5w.xr9ek0c.xjpr12u.xzboxd6.x14l7nz5")
@@ -316,17 +389,14 @@ func PostToGroups() {
 
 			}
 
-			time.Sleep(10 * time.Second)
-
 			// post ad
 			page.MustElement(`div[aria-label="Post"]`).MustClick()
 
-			time.Sleep(10 * time.Second)
+			log.Printf("%s posted successfully", title)
 
-			page.MustScreenshot("facebook.png")
+			time.Sleep(1 * time.Minute)
 		}
 		// break after one group
-		//break
 	}
 
 }
