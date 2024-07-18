@@ -6,10 +6,10 @@ import (
 
 type Config struct {
 	//DBString string `mapstructure:"dbString"`
-	Port     string `mapstructure:"port"`
-	Root     string `mapstructure:"root"`
-	Username string `mapstructure:"username"`
-	Password string `mapstructure:"password"`
+	Port         string `mapstructure:"port"`
+	Root         string `mapstructure:"root"`
+	EmailOrPhone string `mapstructure:"emailorphone"`
+	Password     string `mapstructure:"password"`
 	// MAILGUN_DOMAIN         string        `mapstructure:"mailgunDomain"`
 	// MailgunAPIKey          string        `mapstructure:"mailgunApiKey"`
 	// Access_Token_Duration  time.Duration `mapstructure:"accessTokenDuration"`

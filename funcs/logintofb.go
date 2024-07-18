@@ -26,7 +26,7 @@ func LoginToFacebook() {
 		return
 	}
 	if pageHasLoginForm {
-		page.MustElement("#email").MustInput(config.Username)
+		page.MustElement("#email").MustInput(config.EmailOrPhone)
 		page.MustElement("#pass").MustInput(config.Password)
 		page.MustElement("button").MustClick()
 	}

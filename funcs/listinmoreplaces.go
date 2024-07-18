@@ -57,7 +57,7 @@ func ListInMorePlaces() {
 		card.MustElements("div.x9f619.x1n2onr6.x1ja2u2z.x78zum5.xdt5ytf.x193iq5w.xeuugli.x1iyjqo2.xs83m0k.x150jy0e.x1e558r4.xjkvuk6.x1iorvi4.xdl72j9")[1].MustElement(`div[aria-label="Post"]`).MustClick()
 		time.Sleep(10 * time.Second)
 		info.MustElement(`div[aria-label="Close"]`).MustClick()
-		time.Sleep(10 * time.Second)
+		time.Sleep(30 * time.Second)
 		log.Println("Listing shared to groups")
 	}
 

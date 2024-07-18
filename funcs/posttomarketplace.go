@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/haron1996/fb/config"
 )
@@ -271,44 +270,44 @@ func PostToMarketplace() {
 		}
 
 		// get product tags textareas
-		productTagsTextareas, err := page.Elements(`label[aria-label="Product tags"]`)
-		if err != nil {
-			log.Println("Error getting product tags text area:", err)
-			return
-		}
+		// productTagsTextareas, err := page.Elements(`label[aria-label="Product tags"]`)
+		// if err != nil {
+		// 	log.Println("Error getting product tags text area:", err)
+		// 	return
+		// }
 
-		// input product tags
-		if len(productTagsTextareas) > 0 {
-			tags := []string{
-				"lipa mdogo mdogo smartphones",
-				"samsung lipa mdogo mdogo",
-				"iphone lipa mdogo mdogo",
-				"lipa mdogo mdogo phones",
-				"mkopa phones",
-				"m-kopa phones",
-				"lipa pole pole smartphones",
-				"samsung lipa pole pole",
-				"iphone lipa pole pole",
-			}
+		// // input product tags
+		// if len(productTagsTextareas) > 0 {
+		// 	tags := []string{
+		// 		"lipa mdogo mdogo smartphones",
+		// 		"samsung lipa mdogo mdogo",
+		// 		"iphone lipa mdogo mdogo",
+		// 		"lipa mdogo mdogo phones",
+		// 		"mkopa phones",
+		// 		"m-kopa phones",
+		// 		"lipa pole pole smartphones",
+		// 		"samsung lipa pole pole",
+		// 		"iphone lipa pole pole",
+		// 	}
 
-			for _, tag := range tags {
-				// get product tags textarea
-				productTagsTextarea, err := productTagsTextareas[0].Element("textarea")
-				if err != nil {
-					log.Println("Error getting product tags text area:", err)
-					return
-				}
+		// 	for _, tag := range tags {
+		// 		// get product tags textarea
+		// 		productTagsTextarea, err := productTagsTextareas[0].Element("textarea")
+		// 		if err != nil {
+		// 			log.Println("Error getting product tags text area:", err)
+		// 			return
+		// 		}
 
-				// input tag
-				err = productTagsTextarea.Input(tag)
-				if err != nil {
-					log.Println("Error inputing product tag:", err)
-					return
-				}
-				page.Keyboard.Press(input.Enter)
-			}
+		// 		// input tag
+		// 		err = productTagsTextarea.Input(tag)
+		// 		if err != nil {
+		// 			log.Println("Error inputing product tag:", err)
+		// 			return
+		// 		}
+		// 		page.Keyboard.Press(input.Enter)
+		// 	}
 
-		}
+		// }
 
 		// get "next" button
 		nextButton, err := page.Element(`div[aria-label="Next"]`)
