@@ -6,6 +6,6 @@ import (
 
 func main() {
 	funcs.LoginToFacebook()
-	funcs.PostToMarketplace()
+	// funcs.PostToMarketplace()
 	funcs.ListInMorePlaces()
 }

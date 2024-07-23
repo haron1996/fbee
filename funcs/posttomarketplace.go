@@ -392,5 +392,7 @@ func PostToMarketplace() {
 			log.Println("Error publishing ad:", err)
 			return
 		}
+
+		time.Sleep(30 * time.Second)
 	}
 }
