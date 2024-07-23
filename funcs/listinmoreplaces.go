@@ -53,6 +53,7 @@ func ListInMorePlaces() {
 		}
 		if !infoCardHasListBtn {
 			fmt.Println("Listing has no list in more places button")
+			info.MustElement(`div[aria-label="Close"]`).MustClick()
 			continue
 		}
 		listBtn.MustClick()
@@ -73,14 +74,12 @@ func ListInMorePlaces() {
 		for _, group := range groups {
 			group.MustClick()
 		}
-		totalGroups := len(groups)
-		fmt.Printf("Total Groups:%d\n", totalGroups)
-		time.Sleep(5 * time.Second)
+		time.Sleep(10 * time.Second)
 		card.MustElements("div.x9f619.x1n2onr6.x1ja2u2z.x78zum5.xdt5ytf.x193iq5w.xeuugli.x1iyjqo2.xs83m0k.x150jy0e.x1e558r4.xjkvuk6.x1iorvi4.xdl72j9")[1].MustElement(`div[aria-label="Post"]`).MustClick()
 		time.Sleep(10 * time.Second)
 		info.MustElement(`div[aria-label="Close"]`).MustClick()
-		time.Sleep(30 * time.Second)
-		log.Println("Listing shared to groups")
+		time.Sleep(10 * time.Second)
+		log.Printf("Listing shared to %d groups\n", len(groups))
 	}
 
 	page.MustScreenshot("facebook.png")
