@@ -3,6 +3,7 @@ package funcs
 import (
 	"fmt"
 	"log"
+	"math/rand"
 	"time"
 
 	"github.com/go-rod/rod"
@@ -10,30 +11,39 @@ import (
 )
 
 func ListInMorePlaces() {
-
-	// Launch the browser with specific configurations
 	u := launcher.New().UserDataDir("~/.config/google-chrome").Leakless(true).NoSandbox(true).Headless(true).MustLaunch()
+
 	browser := rod.New().ControlURL(u).MustConnect()
-	defer browser.MustClose() // Ensure the browser closes when main function exits
+
+	defer browser.MustClose()
 
 	page := browser.MustPage("https://web.facebook.com/marketplace/you/selling").MustWaitLoad()
 
-	for i := 0; i < 20; i++ {
-		page.Mouse.Scroll(0, 1000, 0)
-		time.Sleep(10 * time.Second)
+	for i := 0; i < 30; i++ {
+		err := page.Mouse.Scroll(0, 1000, 0)
+		if err != nil {
+			log.Println("Error scrolling page:", err)
+			return
+		}
+		time.Sleep(15 * time.Second)
 	}
 
-	//page.MustScreenshot("facebook.png")
-	// fmt.Println(len(page.MustElements(`div.x9f619.x1n2onr6.x1ja2u2z.x78zum5.xdt5ytf.x2lah0s.x193iq5w.x1k70j0n.xzueoph.xzboxd6.x14l7nz5 > div.x78zum5.x1n2onr6.xh8yej3 > div.x9f619.x1n2onr6.x1ja2u2z.x1jx94hy.x1qpq9i9.xdney7k.xu5ydu1.xt3gfkd.xh8yej3.x6ikm8r.x10wlt62.xquyuld`)))
-	// fmt.Println(page.MustElements(`div.xeq5yr9`)[0].Visible())
-	// return
 	menus := page.MustElements(`div.x9f619.x1n2onr6.x1ja2u2z.x78zum5.xdt5ytf.x2lah0s.x193iq5w.x1k70j0n.xzueoph.xzboxd6.x14l7nz5 > div.x78zum5.x1n2onr6.xh8yej3 > div.x9f619.x1n2onr6.x1ja2u2z.x1jx94hy.x1qpq9i9.xdney7k.xu5ydu1.xt3gfkd.xh8yej3.x6ikm8r.x10wlt62.xquyuld`)
 
 	totalMenus := len(menus)
 
 	fmt.Println("Total returned menus:", totalMenus)
 
-	for _, menu := range menus {
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	r.Shuffle(totalMenus, func(i, j int) {
+		menus[i], menus[j] = menus[j], menus[i]
+	})
+
+	// Select the first 20 elements after shuffling
+	randomMenus := menus[:20]
+
+	for _, menu := range randomMenus {
 		menu.MustClick()
 		time.Sleep(10 * time.Second)
 		pageHasInfo, info, err := page.Has(`div[aria-label="Your listing"]`)
@@ -79,7 +89,7 @@ func ListInMorePlaces() {
 		time.Sleep(10 * time.Second)
 		info.MustElement(`div[aria-label="Close"]`).MustClick()
 		time.Sleep(10 * time.Second)
-		log.Printf("Listing shared to %d groups\n", len(groups))
+		fmt.Printf("Listing shared to %d groups\n", len(groups))
 	}
 
 	page.MustScreenshot("facebook.png")

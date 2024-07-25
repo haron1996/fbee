@@ -1,11 +1,10 @@
 package main
 
-import (
-	"github.com/haron1996/fb/funcs"
-)
+import "github.com/haron1996/fb/funcs"
 
 func main() {
 	funcs.LoginToFacebook()
-	// funcs.PostToMarketplace()
+	//funcs.PostToMarketplace()
 	funcs.ListInMorePlaces()
+	//funcs.CreatePost()
 }
