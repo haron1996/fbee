@@ -40,26 +40,32 @@ func ListInMorePlaces() {
 		menus[i], menus[j] = menus[j], menus[i]
 	})
 
-	// Select the first 20 elements after shuffling
-	randomMenus := menus[:20]
+	selectionCount := 20
+
+	if totalMenus < selectionCount {
+		selectionCount = totalMenus
+	}
+
+	randomMenus := menus[:selectionCount]
 
 	for _, menu := range randomMenus {
 		menu.MustClick()
 		time.Sleep(10 * time.Second)
+
 		pageHasInfo, info, err := page.Has(`div[aria-label="Your listing"]`)
 		if err != nil {
 			log.Println("Error checking if page has info:", err)
-			return
+			continue
 		}
 		if !pageHasInfo {
 			log.Println("Page has no info")
-			return
+			continue
 		}
 
 		infoCardHasListBtn, listBtn, err := info.Has(`div[aria-label="List to more places"]`)
 		if err != nil {
 			log.Println("Error checking if info card has list in more places button:", err)
-			return
+			continue
 		}
 		if !infoCardHasListBtn {
 			fmt.Println("Listing has no list in more places button")
@@ -68,23 +74,30 @@ func ListInMorePlaces() {
 		}
 		listBtn.MustClick()
 		time.Sleep(10 * time.Second)
+
 		pageHasCard, card, err := page.Has(`div[aria-label="List in more places"]`)
 		if err != nil {
 			log.Println("Error checking if page has list in more places card:", err)
-			return
+			continue
 		}
 		if !pageHasCard {
 			log.Println("Page has no list in more places card")
-			return
+			continue
 		}
 
 		containers := card.MustElements("div.x9f619.x1n2onr6.x1ja2u2z.x78zum5.xdt5ytf.x2lah0s.x193iq5w.x1e558r4.x150jy0e")
+		if len(containers) < 2 {
+			log.Println("Not enough containers found")
+			continue
+		}
 		container := containers[1]
+
 		groups := container.MustElements(`div[data-visualcompletion="ignore-dynamic"][style="padding-left: 8px; padding-right: 8px;"]`)
 		for _, group := range groups {
 			group.MustClick()
 		}
 		time.Sleep(10 * time.Second)
+
 		card.MustElements("div.x9f619.x1n2onr6.x1ja2u2z.x78zum5.xdt5ytf.x193iq5w.xeuugli.x1iyjqo2.xs83m0k.x150jy0e.x1e558r4.xjkvuk6.x1iorvi4.xdl72j9")[1].MustElement(`div[aria-label="Post"]`).MustClick()
 		time.Sleep(10 * time.Second)
 		info.MustElement(`div[aria-label="Close"]`).MustClick()
