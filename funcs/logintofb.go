@@ -1,6 +1,7 @@
 package funcs
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -30,7 +31,10 @@ func LoginToFacebook() {
 		page.MustElement("#pass").MustInput(config.Password)
 		page.MustElement("button").MustClick()
 	}
+
 	time.Sleep(10 * time.Second)
+
 	page.MustScreenshot("home.png")
-	log.Println("Login complete")
+
+	fmt.Println("Login complete")
 }

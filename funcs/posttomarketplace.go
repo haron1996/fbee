@@ -81,6 +81,8 @@ func PostToMarketplace() {
 			fileInput.MustSetFiles(imageFiles...)
 		}
 
+		time.Sleep(5 * time.Second)
+
 		// Open the details.txt file within the subdirectory
 		detailsFile := filepath.Join(subDir, "details.txt")
 		file, err := os.Open(detailsFile)
@@ -91,7 +93,7 @@ func PostToMarketplace() {
 		defer file.Close()
 
 		// Initialize variables to hold the extracted fields
-		var title, price, category, condition, description string
+		var title, price, category, condition, description, tags string
 
 		// Create a new scanner to read the file line by line
 		scanner := bufio.NewScanner(file)
@@ -109,6 +111,8 @@ func PostToMarketplace() {
 				condition = strings.TrimSpace(line[len("condition:"):])
 			case strings.HasPrefix(line, "description:"):
 				description = strings.TrimSpace(line[len("description:"):])
+			case strings.HasPrefix(line, "tags:"):
+				tags = strings.TrimSpace(line[len("tags:"):])
 			}
 		}
 
@@ -124,18 +128,13 @@ func PostToMarketplace() {
 		fmt.Println("Category:", category)
 		fmt.Println("Condition:", condition)
 
-		// Split the text by "..."
-		parts := strings.Split(description, "...")
-
-		// Trim spaces from each part
-		for i := range parts {
-			parts[i] = strings.TrimSpace(parts[i])
-		}
-
-		// Join the parts with "...\n"
-		formattedDescription := strings.Join(parts, "\n\n")
+		formattedDescription := formatDescription(description)
 
 		fmt.Println("Description: " + formattedDescription)
+
+		formattedTags := formatTags(tags)
+
+		fmt.Println(formattedTags)
 
 		// get inputs wrapper
 		marketplace, err := page.Element(`div[aria-label="Marketplace"]`)
@@ -270,44 +269,46 @@ func PostToMarketplace() {
 			}
 		}
 
-		// get product tags textareas
-		productTagsTextareas, err := page.Elements(`label[aria-label="Product tags"]`)
-		if err != nil {
-			log.Println("Error getting product tags text area:", err)
-			return
-		}
-
-		// input product tags
-		if len(productTagsTextareas) > 0 {
-			tags := []string{
-				"lipa mdogo mdogo smartphones",
-				"samsung lipa mdogo mdogo",
-				"iphone lipa mdogo mdogo",
-				"lipa mdogo mdogo phones",
-				"mkopa phones",
-				"m-kopa phones",
-				"lipa pole pole smartphones",
-				"samsung lipa pole pole",
-				"iphone lipa pole pole",
+		if len(formattedTags) > 0 {
+			//get product tags textareas
+			productTagsTextareas, err := page.Elements(`label[aria-label="Product tags"]`)
+			if err != nil {
+				log.Println("Error getting product tags text area:", err)
+				return
 			}
 
-			for _, tag := range tags {
-				// get product tags textarea
-				productTagsTextarea, err := productTagsTextareas[0].Element("textarea")
-				if err != nil {
-					log.Println("Error getting product tags text area:", err)
-					return
+			// input product tags
+			if len(productTagsTextareas) > 0 {
+				// tags := []string{
+				// 	"lipa mdogo mdogo smartphones",
+				// 	"samsung lipa mdogo mdogo",
+				// 	"iphone lipa mdogo mdogo",
+				// 	"lipa mdogo mdogo phones",
+				// 	"mkopa phones",
+				// 	"m-kopa phones",
+				// 	"lipa pole pole smartphones",
+				// 	"samsung lipa pole pole",
+				// 	"iphone lipa pole pole",
+				// }
+
+				for _, tag := range formattedTags {
+					// get product tags textarea
+					productTagsTextarea, err := productTagsTextareas[0].Element("textarea")
+					if err != nil {
+						log.Println("Error getting product tags text area:", err)
+						return
+					}
+
+					// input tag
+					err = productTagsTextarea.Input(tag)
+					if err != nil {
+						log.Println("Error inputing product tag:", err)
+						return
+					}
+					page.Keyboard.Press(input.Enter)
 				}
 
-				// input tag
-				err = productTagsTextarea.Input(tag)
-				if err != nil {
-					log.Println("Error inputing product tag:", err)
-					return
-				}
-				page.Keyboard.Press(input.Enter)
 			}
-
 		}
 
 		// get "next" button
@@ -394,5 +395,34 @@ func PostToMarketplace() {
 		}
 
 		time.Sleep(30 * time.Second)
+		fmt.Printf("%s posted successfully\n", title)
 	}
+}
+
+func formatDescription(text string) string {
+	// Split the text by "..."
+	parts := strings.Split(text, "...")
+
+	// Trim spaces from each part
+	for i := range parts {
+		parts[i] = strings.TrimSpace(parts[i])
+	}
+
+	// Join the parts with "...\n"
+	formattedtext := strings.Join(parts, "\n\n")
+	return formattedtext
+}
+
+func formatTags(text string) []string {
+	tags := strings.Split(text, "... ")
+
+	for i := len(tags) - 1; i >= 0; i-- {
+		if tags[i] == "" {
+			tags = tags[:i]
+		} else {
+			break
+		}
+	}
+
+	return tags
 }

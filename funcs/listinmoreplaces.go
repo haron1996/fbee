@@ -40,7 +40,7 @@ func ListInMorePlaces() {
 		menus[i], menus[j] = menus[j], menus[i]
 	})
 
-	selectionCount := 20
+	selectionCount := 200
 
 	if totalMenus < selectionCount {
 		selectionCount = totalMenus
@@ -48,10 +48,12 @@ func ListInMorePlaces() {
 
 	randomMenus := menus[:selectionCount]
 
+	fmt.Println("Random menus:", len(randomMenus))
+
 	for _, menu := range randomMenus {
 		menu.MustClick()
 		time.Sleep(10 * time.Second)
-
+		fmt.Println("processing...")
 		pageHasInfo, info, err := page.Has(`div[aria-label="Your listing"]`)
 		if err != nil {
 			log.Println("Error checking if page has info:", err)
@@ -61,7 +63,7 @@ func ListInMorePlaces() {
 			log.Println("Page has no info")
 			continue
 		}
-
+		fmt.Println("processing...")
 		infoCardHasListBtn, listBtn, err := info.Has(`div[aria-label="List to more places"]`)
 		if err != nil {
 			log.Println("Error checking if info card has list in more places button:", err)
@@ -74,7 +76,7 @@ func ListInMorePlaces() {
 		}
 		listBtn.MustClick()
 		time.Sleep(10 * time.Second)
-
+		fmt.Println("processing...")
 		pageHasCard, card, err := page.Has(`div[aria-label="List in more places"]`)
 		if err != nil {
 			log.Println("Error checking if page has list in more places card:", err)
@@ -84,7 +86,7 @@ func ListInMorePlaces() {
 			log.Println("Page has no list in more places card")
 			continue
 		}
-
+		fmt.Println("processing...")
 		containers := card.MustElements("div.x9f619.x1n2onr6.x1ja2u2z.x78zum5.xdt5ytf.x2lah0s.x193iq5w.x1e558r4.x150jy0e")
 		if len(containers) < 2 {
 			log.Println("Not enough containers found")
@@ -97,13 +99,13 @@ func ListInMorePlaces() {
 			group.MustClick()
 		}
 		time.Sleep(10 * time.Second)
-
+		fmt.Println("processing...")
 		card.MustElements("div.x9f619.x1n2onr6.x1ja2u2z.x78zum5.xdt5ytf.x193iq5w.xeuugli.x1iyjqo2.xs83m0k.x150jy0e.x1e558r4.xjkvuk6.x1iorvi4.xdl72j9")[1].MustElement(`div[aria-label="Post"]`).MustClick()
 		time.Sleep(10 * time.Second)
 		info.MustElement(`div[aria-label="Close"]`).MustClick()
 		time.Sleep(10 * time.Second)
+		page.MustScreenshot("facebook.png")
 		fmt.Printf("Listing shared to %d groups\n", len(groups))
 	}
 
-	page.MustScreenshot("facebook.png")
 }
